@@ -1,22 +1,41 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
-
 import './main.html';
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
+Todos = new Mongo.Collection('todos');
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+Todos._collection.insert({text:"Start Meteor project",createdAt:new Date()});
+Todos._collection.insert({text:"Call mum",createdAt:new Date()});
+Todos._collection.insert({text:"Grocery shopping",createdAt:new Date()});
 
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
-});
+if (Meteor.isClient) {
+  // Template Helpers
+  Template.main.helpers({
+    todos: function(){
+      return Todos.find({}, {sort: {createdAt: -1}});
+    }
+  });
+
+  Template.main.events({
+    "submit .new-todo": function(event){
+      var text = event.target.text.value;
+
+      Todos._collection.insert({
+        text: text,
+        createdAt: new Date()
+      });
+
+      // Clear Form
+      event.target.text.value='';
+
+      // Prevent Submit
+      return false;
+    },
+    "click .toggle-checked": function(){
+      Todos._collection.update(this._id, {$set:{checked: ! this.checked}});
+    },
+    "click .delete-todo": function(){
+      if(confirm('Are you sure?')){
+        Todos._collection.remove(this._id);
+      }
+    }
+  });
+}
