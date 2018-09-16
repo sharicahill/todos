@@ -16,10 +16,14 @@
       </div>
 
       <div class="container">
-        <br />
-        <p>
-          Please login to see todos.
-        </p>
+
+          {{#unless currentUser}}
+            <br />
+            <p>
+              Please login to see todos.
+            </p>
+          {{/unless}}
+
         <!-- Example row of columns -->
         <hr />
         <div class="row">
