@@ -2,6 +2,12 @@ import { Mongo } from 'meteor/mongo';
 
 export const Todos = new Mongo.Collection('todos');
 
+if (Meteor.isServer) {
+  Meteor.publish('todos', function todosPublication(){
+  return Todos.find();
+  });
+}
+
 // Meteor methods
 Meteor.methods({
   addTodo: function(text){

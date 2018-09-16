@@ -4,6 +4,8 @@ import { Template } from 'meteor/templating';
 
 import { Todos } from '../imports/api/todos.js';
 
+Meteor.subscribe('todos');
+
 // Template Helpers
 Template.main.helpers({
   todos: function(){
