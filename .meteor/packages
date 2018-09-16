@@ -21,4 +21,3 @@ autopublish@1.0.7             # Publish all data to the clients (for prototyping
 twbs:bootstrap
 accounts-ui
 accounts-password
-insecure
