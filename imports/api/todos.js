@@ -4,7 +4,9 @@ export const Todos = new Mongo.Collection('todos');
 
 if (Meteor.isServer) {
   Meteor.publish('todos', function todosPublication(){
-  return Todos.find();
+    if(this.userId){
+      return Todos.find({userId: this.userId});
+    }
   });
 }
 
@@ -22,9 +24,17 @@ Meteor.methods({
     });
   },
   deleteTodo: function(todoId){
+    var todo = Todos.findOne(todoId);
+    if(todo.userId !== Meteor.userId()) {
+      throw new Meteor.Error('not-authorised');
+    }
     Todos.remove(todoId);
   },
   setChecked: function(todoId, setChecked){
+    var todo = Todos.findOne(todoId);
+    if(todo.userId !== Meteor.userId()) {
+      throw new Meteor.Error('not-authorised');
+    }
     Todos.update(todoId, {$set:{checked: setChecked}});
   }
 });
